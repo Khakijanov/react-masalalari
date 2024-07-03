@@ -19,11 +19,21 @@ import ProductDetail from "./pages/ProductDetail";
 import { action as registorAction } from "./pages/Register";
 import { action as loginAction } from "./pages/LogIn"
 
+// context
+import { useGlobalContext } from "./hooks/useGlobalContext";
+import { useEffect } from "react";
+
+// firebase
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase/firebaseConfig";
+
 
 
 function App() {
+  const {user, dispatch, isAuthReady} = useGlobalContext()
+  console.log(user, )
  
-  const user = false
+  
   const routes = createBrowserRouter([
     {
       path:'/',
@@ -87,10 +97,17 @@ function App() {
 
     }
   ])
+
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user)=>{
+      dispatch({type:'LOG_IN', payload:user});
+      dispatch({type:"IS_AUTH_READY"})
+    })
+  },[])
   
   return (
     <>
-        <RouterProvider router={routes}/>
+        {  isAuthReady && <RouterProvider router={routes}/>}
     </>
   )
 }

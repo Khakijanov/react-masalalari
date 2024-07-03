@@ -1,10 +1,20 @@
 import { NavLink, Link } from "react-router-dom"
-import { useContext } from "react"
-// import { globalContext } from "../context/GlobalContext"
+import { useGlobalContext } from "../hooks/useGlobalContext"
 import './navbar.css'
+
+// firebase
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+import toast from "react-hot-toast";
 
 
 function Navbar() {
+  const {user} = useGlobalContext()
+
+  const signOutProfile = async ()=>{
+    await signOut(auth);
+    toast.success(`See you Soon ${user.displayName}`)
+ }
  
   return (
     
@@ -61,8 +71,32 @@ function Navbar() {
           {/* <span className="badge badge-sm indicator-item"></span> */}
         </div>
       </div>
-      <NavLink to={'/login'} className="btn  btn-ghost max-w-44 font-semibold">Sign up</NavLink>
-      <NavLink to={'/register'} className="btn btn-outline btn-primary  max-w-44 font-semibold">Sign in</NavLink>
+      <div className="avatar">
+</div>
+      {/* <NavLink to={'/login'} className="btn  btn-ghost max-w-44 font-semibold">Sign up</NavLink>
+      <NavLink to={'/register'} className="btn btn-outline btn-primary  max-w-44 font-semibold">Sign in</NavLink> */}
+      <NavLink onClick={signOutProfile} className="btn btn-outline btn-primary  max-w-44 font-semibold">Log out</NavLink>
+      <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+        <div className="w-10 rounded-full">
+          <img
+            alt="Tailwind CSS Navbar component"
+            src={user.photoURL ? user.photoURL : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}/>
+        </div>
+      </div>
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        <li>
+          <a className="justify-between">
+            {user.displayName}
+            <span className="badge">New</span>
+          </a>
+        </li>
+        <li><a>Settings</a></li>
+        <li><Link onClick={signOutProfile}>Logout</Link></li>
+      </ul>
+    </div>
     </div>
   </div>
   </header>

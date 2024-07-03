@@ -1,25 +1,31 @@
 import { createContext, useReducer } from "react"
 export const globalContext = createContext()
 
-const usersData = {
-    user:null,
-    isAuthor:false , 
-}
+const changeState = (state, action)=>{
+    const {type, payload} = action
 
-// const changeState = (state, action)=>{
-//     console.log(state)
-//     console.log(action)
-    
-// const {title, price} = action
-// }
+    switch(type){
+        case "LOG_IN":
+            return {...state, user:payload}
+        case "LOG_OUT":
+            return {...state, user:null}    
+        case "IS_AUTH_READY":
+            return {...state, isAuthReady:true}   
+        default: 
+    }
+}
 export const GlobalContextProvider = ({children})=>{
 
-    // const [state, dispatch]= useReducer(changeState, globalState)
+    const [state, dispatch] = useReducer(changeState, {
+        user:null,
+        isAuthReady:false,
+        products:[],
+        totalProduct:0,
+        totalCounter:0,
 
-    // dispatch({type:'ADD_ITEM', payload:{title:'iphone', price:'550$'}})
+    })
 
-
-    return <globalContext.Provider value={{}}>
+    return <globalContext.Provider value={{...state, dispatch}}>
         {children}
     </globalContext.Provider>
 
